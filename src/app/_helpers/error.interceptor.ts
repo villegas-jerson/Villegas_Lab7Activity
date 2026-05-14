@@ -16,7 +16,9 @@ export class ErrorInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
       catchError(err => {
-        if ([401, 403].includes(err.status) && this.accountService.accountValue) {
+        // ✅ ignore 401 errors from revoke-token so logout doesn't clear accountValue
+        const isRevokeToken = request.url.includes('revoke-token');
+        if ([401, 403].includes(err.status) && this.accountService.accountValue && !isRevokeToken) {
           this.accountService.logout();
         }
         const error =

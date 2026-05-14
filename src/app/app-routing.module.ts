@@ -11,24 +11,18 @@ const profileModule = () => import('./profile/profile.module').then(x => x.Profi
 
 const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
-
   { path: 'account', loadChildren: accountModule },
-
-  { path: 'profile', loadChildren: profileModule, canActivate: [AuthGuard] },
-
+  { path: 'profile', loadChildren: profileModule },
   {
     path: 'admin',
     loadChildren: adminModule,
     canActivate: [AuthGuard],
     data: { roles: [Role.Admin] }
-  },
-
-  // fallback route
-  { path: '**', redirectTo: '' }
+  }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { useHash: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
